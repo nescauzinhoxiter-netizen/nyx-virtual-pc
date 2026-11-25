@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYX Virtual PC 11</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:"Segoe UI",Arial,sans-serif;
+ color:white;overflow:hidden;
+ background:#07152e;
+}
+.desktop{
+ height:100dvh;width:100%;
+ background:
+ radial-gradient(ellipse at 65% 42%,#1686e9 0%,transparent 38%),
+ radial-gradient(ellipse at 55% 55%,#1255b7 0%,transparent 48%),
+ linear-gradient(135deg,#06132d,#123f83 65%,#07162d);
+ position:relative;
+}
+.icons{padding:18px;display:flex;flex-direction:column;
+ gap:22px;width:90px}
+.app-icon{
+ width:65px;text-align:center;cursor:pointer;
+ font-size:30px;padding:5px;border-radius:8px;
+}
+.app-icon:hover{background:#ffffff22}
+.app-icon span{display:block;font-size:12px;margin-top:5px}
+.taskbar{
+ position:absolute;bottom:0;width:100%;height:65px;
+ background:#dce8f3dd;backdrop-filter:blur(22px);
+ display:flex;align-items:center;justify-content:center;
+ gap:10px;padding:5px;color:#17243a;
+}
+.taskbtn{
+ border:0;background:transparent;border-radius:9px;
+ font-size:23px;width:43px;height:43px;cursor:pointer;
+}
+.taskbtn:hover{background:#ffffffaa}
+.clock{
+ position:absolute;right:12px;text-align:right;
+ font-size:11px;line-height:17px;
+}
+.start{
+ display:none;position:absolute;bottom:75px;
+ left:50%;transform:translateX(-50%);
+ width:min(92%,420px);height:450px;max-height:75dvh;
+ background:#e7edf5f2;color:#182638;
+ border:1px solid #ffffffaa;border-radius:12px;
+ padding:20px;backdrop-filter:blur(25px);
+ box-shadow:0 15px 50px #0005;
+}
+.start.show{display:block}
+.search{
+ width:100%;padding:12px;border-radius:7px;
+ border:1px solid #b8c5d5;background:white;
+ margin:12px 0 20px;
+}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.startapp{
+ background:transparent;border:0;border-radius:8px;
+ padding:12px 3px;cursor:pointer;color:#172638;
+}
+.startapp:hover{background:#ffffffaa}
+.startapp b{display:block;font-size:27px;margin-bottom:7px}
+.startapp span{font-size:12px}
+.window{
+ display:none;position:absolute;left:50%;top:45%;
+ transform:translate(-50%,-50%);
+ width:min(94%,650px);height:min(430px,70dvh);
+ background:#f1f5f9;color:#172638;
+ border-radius:12px;overflow:hidden;
+ box-shadow:0 15px 50px #0006;
+}
+.window.show{display:block}
+.winhead{
+ height:45px;background:#e1e9f2;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 12px;font-size:14px;
+}
+.close{
+ border:0;background:transparent;font-size:20px;
+ cursor:pointer;border-radius:5px;padding:5px 12px;
+}
+.close:hover{background:#e44;color:white}
+.content{padding:18px;overflow:auto;height:calc(100% - 45px)}
+.tile{
+ background:white;padding:15px;border-radius:9px;
+ margin-bottom:10px;border:1px solid #dce4ed;
+}
+input,button{font:inherit}
+.terminal{
+ background:#101820;color:#8ef5a7;
+ font-family:monospace;padding:15px;border-radius:8px;
+ height:240px;overflow:auto;
+}
+.terminal input{
+ background:transparent;border:0;color:#8ef5a7;
+ outline:none;width:70%;
+}
+@media(max-width:450px){
+ .taskbar{justify-content:center}
+ .clock{font-size:9px;right:5px}
+ .taskbtn{width:37px}
+}
+</style>
+</head>
+<body>
+<div class="desktop">
+
+ <div class="icons">
+  <div class="app-icon" onclick="openApp('files')">📁<span>Arquivos</span></div>
+  <div class="app-icon" onclick="openApp('browser')">🌐<span>Navegador</span></div>
+  <div class="app-icon" onclick="openApp('terminal')">⌨️<span>Terminal</span></div>
+  <div class="app-icon" onclick="openApp('settings')">⚙️<span>Configurações</span></div>
+ </div>
+
+ <div class="start" id="start">
+  <h3>Iniciar</h3>
+  <input class="search" placeholder="Pesquisar aplicativos...">
+  <h4>Fixados</h4>
+  <div class="apps">
+   <button class="startapp" onclick="openApp('files')"><b>📁</b><span>Arquivos</span></button>
+   <button class="startapp" onclick="openApp('browser')"><b>🌐</b><span>Navegador</span></button>
+   <button class="startapp" onclick="openApp('terminal')"><b>⌨️</b><span>Terminal</span></button>
+   <button class="startapp" onclick="openApp('settings')"><b>⚙️</b><span>Configurações</span></button>
+   <button class="startapp" onclick="openApp('about')"><b>💻</b><span>Sobre</span></button>
+  </div>
+  <hr style="border:0;border-top:1px solid #ccd5df;margin-top:25px">
+  <p>NYX Virtual PC 11</p>
+  <small>Seu computador virtual</small>
+ </div>
+
+ <div class="window" id="files">
+  <div class="winhead">📁 Explorador de Arquivos
+   <button class="close" onclick="closeApp('files')">×</button>
+  </div>
+  <div class="content">
+   <h3>Início</h3>
+   <div class="tile">📂 Área de Trabalho</div>
+   <div class="tile">📂 Documentos</div>
+   <div class="tile">📂 Downloads</div>
+   <div class="tile">💾 Este computador</div>
+   <p>Ambiente de arquivos demonstrativo.</p>
+  </div>
+ </div>
+
+ <div class="window" id="browser">
+  <div class="winhead">🌐 Navegador NYX
+   <button class="close" onclick="closeApp('browser')">×</button>
+  </div>
+  <div class="content">
+   <h3>Navegador</h3>
+   <form onsubmit="browse(event)">
+    <input id="address" placeholder="Digite um endereço..." style="width:75%;padding:12px;border:1px solid #aaa;border-radius:7px">
+    <button style="padding:12px">Ir</button>
+   </form>
+   <p>Digite um endereço para abrir uma página.</p>
+   <div id="browserinfo" class="tile">Bem-vindo ao NYX Browser.</div>
+  </div>
+ </div>
+
+ <div class="window" id="terminal">
+  <div class="winhead">⌨️ Terminal NYX
+   <button class="close" onclick="closeApp('terminal')">×</button>
+  </div>
+  <div class="content">
+   <div class="terminal" id="output">
+    NYX Terminal 1.0<br>
+    Este é um terminal demonstrativo.<br>
+    Digite help para ver os comandos.<br><br>
+    <span>nyx@virtual-pc:~$ </span>
+    <input id="command" onkeydown="runCommand(event)" autofocus>
+   </div>
+  </div>
+ </div>
+
+ <div class="window" id="settings">
+  <div class="winhead">⚙️ Configurações
+   <button class="close" onclick="closeApp('settings')">×</button>
+  </div>
+  <div class="content">
+   <h2>Configurações</h2>
+   <div class="tile">🎨 Personalização</div>
+   <div class="tile">🖥️ Sistema</div>
+   <div class="tile">🌐 Rede e Internet</div>
+   <div class="tile">🔊 Som</div>
+   <div class="tile">🔐 Privacidade</div>
+  </div>
+ </div>
+
+ <div class="window" id="about">
+  <div class="winhead">💻 Sobre o NYX
+   <button class="close" onclick="closeApp('about')">×</button>
+  </div>
+  <div class="content">
+   <h2>NYX Virtual PC 11</h2>
+   <p>Versão 1.0</p>
+   <p>Interface experimental inspirada no Windows 11.</p>
+   <p>O sistema operacional real será conectado futuramente.</p>
+  </div>
+ </div>
+
+ <div class="taskbar">
+  <button class="taskbtn" onclick="toggleStart()">⊞</button>
+  <button class="taskbtn" onclick="openApp('browser')">🌐</button>
+  <button class="taskbtn" onclick="openApp('files')">📁</button>
+  <button class="taskbtn" onclick="openApp('terminal')">⌨️</button>
+  <button class="taskbtn" onclick="openApp('settings')">⚙️</button>
+  <div class="clock">
+   <div id="time"></div>
+   <div id="date"></div>
+  </div>
+ </div>
+</div>
+
+<script>
+function toggleStart(){
+ document.getElementById('start').classList.toggle('show');
+}
+function openApp(id){
+ document.getElementById('start').classList.remove('show');
+ document.querySelectorAll('.window').forEach(w=>w.classList.remove('show'));
+ document.getElementById(id).classList.add('show');
+}
+function closeApp(id){
+ document.getElementById(id).classList.remove('show');
+}
+function browse(e){
+ e.preventDefault();
+ let value=document.getElementById('address').value.trim();
+ if(!value)return;
+ if(!/^https?:\/\//i.test(value))value='https://'+value;
+ document.getElementById('browserinfo').innerHTML=
+ 'Página solicitada: <a href="'+value.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener">Abrir '+value.replace(/</g,'&lt;')+'</a>';
+}
+function runCommand(e){
+ if(e.key!=='Enter')return;
+ let input=e.target;
+ let cmd=input.value.trim().toLowerCase();
+ let output=document.getElementById('output');
+ let result='';
+ if(cmd==='help')result='Comandos: help, date, whoami, clear, about';
+ else if(cmd==='date')result=new Date().toLocaleString('pt-BR');
+ else if(cmd==='whoami')result='nyx@virtual-pc';
+ else if(cmd==='about')result='NYX Virtual PC 11 - Terminal demonstrativo';
+ else if(cmd==='clear'){output.innerHTML='NYX Terminal<br>';input.value='';return;}
+ else if(cmd==='')result='';
+ else result='Comando não encontrado: '+cmd;
+ let line=document.createElement('div');
+ line.textContent='nyx@virtual-pc:~$ '+input.value;
+ let response=document.createElement('div');
+ response.textContent=result;
+ output.insertBefore(line,input.parentElement);
+ output.insertBefore(response,input.parentElement);
+ input.value='';
+ output.scrollTop=output.scrollHeight;
+}
+function updateClock(){
+ let now=new Date();
+ document.getElementById('time').textContent=
+ now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+ document.getElementById('date').textContent=
+ now.toLocaleDateString('pt-BR');
+}
+updateClock();
+setInterval(updateClock,1000);
+</script>
+</body>
+</html>
+  
